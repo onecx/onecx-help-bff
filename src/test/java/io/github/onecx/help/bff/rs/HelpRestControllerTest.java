@@ -234,7 +234,57 @@ class HelpRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getHelpById_shouldReturnNotFound_whenHelpDoesNotExist() {
+
+        String id = "82689h23-9624-2234-c50b-8749d073c287";
+
+        mockServerClient
+                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(Response.status(Response.Status.NOT_FOUND).build())));
+
+        // bff call
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get(id)
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
     void getHelpByItemId() {
+
+        String id = "82689h23-9624-2234-c50b-8749d073c287";
+
+        mockServerClient
+                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/itemId/" + id)
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(Response.status(Response.Status.NOT_FOUND).build())));
+
+        // bff call
+        var response = given()
+                .when()
+                .contentType(APPLICATION_JSON)
+                .get("/itemId/" + id)
+                .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+
+        Assertions.assertNotNull(response);
+
+    }
+
+    @Test
+    void getHelpByItemId_shouldReturnNotFound_whenHelpDoesNotExist() {
 
         String id = "82689h23-9624-2234-c50b-8749d073c287";
         var offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
@@ -265,6 +315,10 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpDTO.class);
 
         Assertions.assertNotNull(response);
+        Assertions.assertEquals(response.getBaseUrl(), data.getBaseUrl());
+        Assertions.assertEquals(response.getItemId(), data.getItemId());
+        Assertions.assertEquals(offsetDateTimeMapper.map(response.getCreationDate()),
+                offsetDateTimeMapper.map(data.getCreationDate()));
 
     }
 
@@ -310,6 +364,9 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpPageResultDTO.class);
 
         Assertions.assertNotNull(response);
+        Assertions.assertEquals(response.getNumber(), 2);
+        Assertions.assertEquals(response.getSize(), 1);
+        Assertions.assertEquals(response.getStream().size(), 2);
     }
 
     @Test
@@ -360,6 +417,9 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpPageResultDTO.class);
 
         Assertions.assertNotNull(response);
+        Assertions.assertEquals(response.getNumber(), 2);
+        Assertions.assertEquals(response.getStream().size(), 2);
+
     }
 
     @Test
