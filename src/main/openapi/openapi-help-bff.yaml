@@ -161,8 +161,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/HelpPageResult'
+                $ref: '#/components/schemas/HelpPageResult'
   /helps/itemId/{itemId}:
     get:
       tags:
@@ -198,7 +197,7 @@ components:
         resourceUrl:
           type: string
         appId:
-          type: string                                        
+          type: string
         pageNumber:
           format: int32
           description: The number of page.
