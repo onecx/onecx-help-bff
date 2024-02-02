@@ -9,34 +9,6 @@ tags:
   - name: helpsInternal
 paths:
   /helps:
-    get:
-      tags:
-        - helpsInternal
-      description: Return list of helps
-      operationId: getHelps
-      parameters:
-        - name: pageNumber
-          in: query
-          schema:
-            format: int32
-            description: The number of page.
-            default: 0
-            type: integer
-        - name: pageSize
-          in: query
-          schema:
-            format: int32
-            description: The size of page
-            default: 10
-            type: integer
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/HelpPageResult'
     post:
       tags:
         - helpsInternal
@@ -162,27 +134,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HelpPageResult'
-  /helps/itemId/{itemId}:
-    get:
-      tags:
-        - helpsInternal
-      description: Load a single help definition
-      operationId: getHelpByItemId
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Help'
-        "404":
-          description: Not found
 components:
   schemas:
     HelpSearchCriteria:
@@ -233,7 +184,7 @@ components:
         - itemId
       type: object
       properties:
-        version:
+        modificationCount:
           format: int32
           type: integer
         creationDate:
@@ -294,19 +245,6 @@ components:
         - itemId
       type: object
       properties:
-        version:
-          format: int32
-          type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
-        id:
-          type: string
         itemId:
           type: string
         context:
@@ -320,19 +258,13 @@ components:
     UpdateHelp:
       required:
         - name
+        - itemId
+        - modificationCount
       type: object
       properties:
-        version:
+        modificationCount:
           format: int32
           type: integer
-        creationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        creationUser:
-          type: string
-        modificationDate:
-          $ref: '#/components/schemas/OffsetDateTime'
-        modificationUser:
-          type: string
         id:
           type: string
         itemId:
