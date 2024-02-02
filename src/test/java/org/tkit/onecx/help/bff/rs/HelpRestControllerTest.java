@@ -189,7 +189,7 @@ class HelpRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(data.getAppIds(), response.getAppIds());
-        Assertions.assertEquals(data.getAppIds().size(), 2);
+        Assertions.assertEquals(2, data.getAppIds().size());
     }
 
     @Test
@@ -325,8 +325,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpPageResultDTO.class);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(response.getNumber(), 2);
-        Assertions.assertEquals(response.getStream().size(), 2);
+        Assertions.assertEquals(2, response.getNumber());
+        Assertions.assertEquals(2, response.getStream().size());
 
     }
 
