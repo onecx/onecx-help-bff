@@ -1,10 +1,12 @@
 package org.tkit.onecx.help.bff.rs.log;
 
-import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
+import java.util.List;
+
 import jakarta.enterprise.context.ApplicationScoped;
+
 import org.tkit.quarkus.log.cdi.LogParam;
 
-import java.util.List;
+import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 
 @ApplicationScoped
 public class BffLogParam implements LogParam {
