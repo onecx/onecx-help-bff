@@ -1,4 +1,4 @@
-package io.github.onecx.help.bff.rs;
+package org.tkit.onecx.help.bff.rs;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -19,11 +19,11 @@ import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
 import org.mockserver.model.MediaType;
+import org.tkit.onecx.help.bff.rs.controller.HelpRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.io.github.onecx.help.bff.clients.model.*;
-import gen.io.github.onecx.help.bff.rs.internal.model.*;
-import io.github.onecx.help.bff.rs.controller.HelpRestController;
+import gen.org.tkit.onecx.help.bff.clients.model.*;
+import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -69,11 +69,8 @@ class HelpRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         CreateHelpDTO input = createHelpDTO("appId1",
-                "123-456-789",
                 "testContext",
-                offsetDateTime,
                 "http://localhost:8080/mfe",
-                "testUser",
                 "itemId1");
 
         // bff call
@@ -124,9 +121,6 @@ class HelpRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(problemDetailResponse)));
 
         CreateHelpDTO input = createHelpDTO(null,
-                null,
-                null,
-                null,
                 null,
                 null,
                 null);
@@ -195,7 +189,7 @@ class HelpRestControllerTest extends AbstractTest {
 
         Assertions.assertNotNull(response);
         Assertions.assertEquals(data.getAppIds(), response.getAppIds());
-        Assertions.assertEquals(data.getAppIds().size(), 2);
+        Assertions.assertEquals(2, data.getAppIds().size());
     }
 
     @Test
@@ -284,92 +278,6 @@ class HelpRestControllerTest extends AbstractTest {
     }
 
     @Test
-    void getHelpByItemId_shouldReturnNotFound_whenHelpDoesNotExist() {
-
-        String id = "82689h23-9624-2234-c50b-8749d073c287";
-        var offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        OffsetDateTimeMapper offsetDateTimeMapper = new OffsetDateTimeMapper();
-        Help data = createHelp("appId1",
-                "123-456-789",
-                "testContext",
-                offsetDateTime,
-                "http://localhost:8080/mfe",
-                "testUser",
-                "itemId1");
-
-        mockServerClient
-                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/itemId/" + id)
-                        .withMethod(HttpMethod.GET))
-                .withPriority(100)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(data)));
-
-        // bff call
-        var response = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .get("/itemId/" + id)
-                .then()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(HelpDTO.class);
-
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(response.getBaseUrl(), data.getBaseUrl());
-        Assertions.assertEquals(response.getItemId(), data.getItemId());
-        Assertions.assertEquals(offsetDateTimeMapper.map(response.getCreationDate()),
-                offsetDateTimeMapper.map(data.getCreationDate()));
-
-    }
-
-    @Test
-    void getHelps() {
-
-        HelpPageResult data = new HelpPageResult();
-        data.setNumber(2);
-        data.setTotalPages(1L);
-        data.setSize(1);
-        List<Help> helpList = new ArrayList<>();
-        helpList.add(createHelp("appId1",
-                "123-456-789",
-                "testContext",
-                null,
-                "http://localhost:8080/mfe",
-                "testUser",
-                "itemId1"));
-        helpList.add(createHelp("appId2",
-                "123-456-987",
-                "testContext2",
-                null,
-                "http://localhost:8080/mfe",
-                "testUser2",
-                "itemId2"));
-        data.setStream(helpList);
-
-        mockServerClient
-                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH)
-                        .withMethod(HttpMethod.GET))
-                .withPriority(100)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(data)));
-
-        // bff call
-        var response = given()
-                .when()
-                .contentType(APPLICATION_JSON)
-                .get()
-                .then()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(HelpPageResultDTO.class);
-
-        Assertions.assertNotNull(response);
-        Assertions.assertEquals(response.getNumber(), 2);
-        Assertions.assertEquals(response.getSize(), 1);
-        Assertions.assertEquals(response.getStream().size(), 2);
-    }
-
-    @Test
     void searchHelps() {
 
         HelpPageResult data = new HelpPageResult();
@@ -417,8 +325,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpPageResultDTO.class);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(response.getNumber(), 2);
-        Assertions.assertEquals(response.getStream().size(), 2);
+        Assertions.assertEquals(2, response.getNumber());
+        Assertions.assertEquals(2, response.getStream().size());
 
     }
 
@@ -434,6 +342,7 @@ class HelpRestControllerTest extends AbstractTest {
                         .withContentType(MediaType.APPLICATION_JSON));
 
         UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
+        updateHelpDTO.setModificationCount(0);
         updateHelpDTO.setAppId("appId1");
         updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
         updateHelpDTO.setItemId("itemId1");
@@ -466,6 +375,7 @@ class HelpRestControllerTest extends AbstractTest {
                                 .withBody(JsonBody.json(problemDetailResponse)));
 
         UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
+        updateHelpDTO.setModificationCount(0);
         updateHelpDTO.setAppId("appId1");
         updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
         updateHelpDTO.setItemId("itemId1");
@@ -497,15 +407,11 @@ class HelpRestControllerTest extends AbstractTest {
         return help;
     }
 
-    private CreateHelpDTO createHelpDTO(String appId, String id, String context, OffsetDateTime creationDate, String baseUrl,
-            String creationUser, String itemId) {
+    private CreateHelpDTO createHelpDTO(String appId, String context, String baseUrl, String itemId) {
         CreateHelpDTO helpDTO = new CreateHelpDTO();
         helpDTO.setAppId(appId);
-        helpDTO.setId(id);
         helpDTO.setContext(context);
-        helpDTO.setCreationDate(creationDate);
         helpDTO.setBaseUrl(baseUrl);
-        helpDTO.setCreationUser(creationUser);
         helpDTO.setItemId(itemId);
         return helpDTO;
     }

@@ -1,4 +1,4 @@
-package io.github.onecx.help.bff.rs.controller;
+package org.tkit.onecx.help.bff.rs.controller;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -10,18 +10,18 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
+import org.tkit.onecx.help.bff.rs.mappers.ExceptionMapper;
+import org.tkit.onecx.help.bff.rs.mappers.HelpMapper;
+import org.tkit.onecx.help.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.io.github.onecx.help.bff.clients.api.HelpsInternalApi;
-import gen.io.github.onecx.help.bff.clients.model.Help;
-import gen.io.github.onecx.help.bff.clients.model.HelpAppIds;
-import gen.io.github.onecx.help.bff.clients.model.HelpPageResult;
-import gen.io.github.onecx.help.bff.clients.model.ProblemDetailResponse;
-import gen.io.github.onecx.help.bff.rs.internal.HelpsInternalApiService;
-import gen.io.github.onecx.help.bff.rs.internal.model.*;
-import io.github.onecx.help.bff.rs.mappers.ExceptionMapper;
-import io.github.onecx.help.bff.rs.mappers.HelpMapper;
-import io.github.onecx.help.bff.rs.mappers.ProblemDetailMapper;
+import gen.org.tkit.onecx.help.bff.clients.api.HelpsInternalApi;
+import gen.org.tkit.onecx.help.bff.clients.model.Help;
+import gen.org.tkit.onecx.help.bff.clients.model.HelpAppIds;
+import gen.org.tkit.onecx.help.bff.clients.model.HelpPageResult;
+import gen.org.tkit.onecx.help.bff.clients.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.help.bff.rs.internal.HelpsInternalApiService;
+import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 
 @ApplicationScoped
 @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
@@ -79,24 +79,6 @@ public class HelpRestController implements HelpsInternalApiService {
     }
 
     @Override
-    public Response getHelpByItemId(String itemId) {
-        try (Response response = client.getHelpByItemId(itemId)) {
-            Help help = response.readEntity(Help.class);
-            HelpDTO helpDTO = helpMapper.mapHelp(help);
-            return Response.status(response.getStatus()).entity(helpDTO).build();
-        }
-    }
-
-    @Override
-    public Response getHelps(Integer pageNumber, Integer pageSize) {
-        try (Response response = client.getHelps(pageNumber, pageSize)) {
-            HelpPageResult helpPageResult = response.readEntity(HelpPageResult.class);
-            HelpPageResultDTO helpPageResultDTO = helpMapper.mapHelpPageResults(helpPageResult);
-            return Response.status(response.getStatus()).entity(helpPageResultDTO).build();
-        }
-    }
-
-    @Override
     public Response searchHelps(HelpSearchCriteriaDTO helpSearchCriteriaDTO) {
 
         try (Response response = client.searchHelps(helpMapper.mapHelpSearchCriteria(helpSearchCriteriaDTO))) {
@@ -118,13 +100,11 @@ public class HelpRestController implements HelpsInternalApiService {
 
     @ServerExceptionMapper
     public RestResponse<ProblemDetailResponseDTO> constraint(ConstraintViolationException ex) {
-
         return exceptionMapper.constraint(ex);
     }
 
     @ServerExceptionMapper
     public Response restException(WebApplicationException ex) {
-
         return Response.status(ex.getResponse().getStatus()).build();
     }
 }

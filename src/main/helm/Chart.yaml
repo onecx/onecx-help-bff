@@ -1,13 +1,13 @@
 apiVersion: v2
-name: onecx-helm-bff
+name: onecx-help-bff
 version: 0.0.0
 appVersion: 0.0.0
-description: Onecx helm bff
+description: Onecx help bff
 keywords:
   - iam
   - parameters
 sources:
-  - https://github.com/onecx/onecx-helm-bff
+  - https://github.com/onecx/onecx-help-bff
 maintainers:
   - name: Tkit Developer
     email: tkit_dev@1000kit.org
