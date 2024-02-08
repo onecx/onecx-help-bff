@@ -4,8 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.help.bff.clients.model.*;
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.help.client.model.*;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface HelpMapper {

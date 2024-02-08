@@ -14,7 +14,6 @@ import jakarta.ws.rs.core.Response;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.model.JsonBody;
@@ -22,8 +21,8 @@ import org.mockserver.model.MediaType;
 import org.tkit.onecx.help.bff.rs.controller.HelpRestController;
 import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
-import gen.org.tkit.onecx.help.bff.clients.model.*;
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.help.client.model.*;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -37,14 +36,15 @@ class HelpRestControllerTest extends AbstractTest {
     @InjectMockServerClient
     MockServerClient mockServerClient;
 
-    @BeforeEach
-    void resetMockserverBefore() {
-        mockServerClient.reset();
-    }
+    static final String MOCK_ID = "MOCK";
 
     @AfterEach
     void resetMockserver() {
-        mockServerClient.reset();
+        try {
+            mockServerClient.clear(MOCK_ID);
+        } catch (Exception ex) {
+            // mockId not existing
+        }
     }
 
     @Test
@@ -64,6 +64,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH)
                         .withMethod(HttpMethod.POST))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.CREATED.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -76,6 +77,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(input)
                 .post()
@@ -99,6 +102,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .post()
                 .then()
@@ -117,6 +122,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH)
                         .withMethod(HttpMethod.POST))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.BAD_REQUEST.getStatusCode())
                         .withBody(JsonBody.json(problemDetailResponse)));
 
@@ -128,6 +134,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(input)
                 .post()
@@ -146,11 +154,14 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.DELETE))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode()));
 
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .delete(id)
                 .then()
@@ -174,6 +185,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/appIds")
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -181,6 +193,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get("/appIds")
                 .then()
@@ -210,6 +224,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -217,6 +232,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get(id)
                 .then()
@@ -236,6 +253,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(Response.status(Response.Status.NOT_FOUND).build())));
@@ -243,6 +261,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get(id)
                 .then()
@@ -261,6 +281,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/itemId/" + id)
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(Response.status(Response.Status.NOT_FOUND).build())));
@@ -268,6 +289,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .get("/itemId/" + id)
                 .then()
@@ -305,6 +328,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/search")
                         .withMethod(HttpMethod.POST))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON)
                         .withBody(JsonBody.json(data)));
@@ -317,6 +341,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         var response = given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(helpSearchCriteriaDTO)
                 .post("/search")
@@ -338,6 +364,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.PUT))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(httpRequest -> response().withStatusCode(Response.Status.NO_CONTENT.getStatusCode())
                         .withContentType(MediaType.APPLICATION_JSON));
 
@@ -350,6 +377,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
                 .put(id)
@@ -369,6 +398,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/" + id)
                         .withMethod(HttpMethod.PUT))
                 .withPriority(100)
+                .withId(MOCK_ID)
                 .respond(
                         httpRequest -> response()
                                 .withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
@@ -383,6 +413,8 @@ class HelpRestControllerTest extends AbstractTest {
         // bff call
         given()
                 .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
                 .put("/82689h23-9624-2234-c50b-8749d073c287")
@@ -391,6 +423,48 @@ class HelpRestControllerTest extends AbstractTest {
                 .contentType(APPLICATION_JSON)
                 .extract().as(ProblemDetailResponseDTO.class);
 
+    }
+
+    @Test
+    void errorSecurityTest() {
+        String id = "82689h23-9624-2234-c50b-8749d073c287";
+
+        // do not send auth header
+        given()
+                .when()
+                //.auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .get("/itemId/" + id)
+                .then()
+                .statusCode(Response.Status.UNAUTHORIZED.getStatusCode());
+
+        UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
+        updateHelpDTO.setModificationCount(0);
+        updateHelpDTO.setAppId("appId1");
+        updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
+        updateHelpDTO.setItemId("itemId1");
+
+        // FORBIDDEN when needed write permission and USER have only read
+        given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(USER))
+                .header(APM_HEADER_PARAM, USER)
+                .contentType(APPLICATION_JSON)
+                .body(updateHelpDTO)
+                .put(id)
+                .then()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+
+        // FORBIDDEN when needed delete permission and USER have only read
+        given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(USER))
+                .header(APM_HEADER_PARAM, USER)
+                .contentType(APPLICATION_JSON)
+                .delete(id)
+                .then()
+                .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
 
     private Help createHelp(String appId, String id, String context, OffsetDateTime creationDate, String baseUrl,
