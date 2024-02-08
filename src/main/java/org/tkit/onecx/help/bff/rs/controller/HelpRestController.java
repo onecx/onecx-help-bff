@@ -15,13 +15,13 @@ import org.tkit.onecx.help.bff.rs.mappers.HelpMapper;
 import org.tkit.onecx.help.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
 
-import gen.org.tkit.onecx.help.bff.clients.api.HelpsInternalApi;
-import gen.org.tkit.onecx.help.bff.clients.model.Help;
-import gen.org.tkit.onecx.help.bff.clients.model.HelpAppIds;
-import gen.org.tkit.onecx.help.bff.clients.model.HelpPageResult;
-import gen.org.tkit.onecx.help.bff.clients.model.ProblemDetailResponse;
 import gen.org.tkit.onecx.help.bff.rs.internal.HelpsInternalApiService;
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
+import gen.org.tkit.onecx.help.client.api.HelpsInternalApi;
+import gen.org.tkit.onecx.help.client.model.Help;
+import gen.org.tkit.onecx.help.client.model.HelpAppIds;
+import gen.org.tkit.onecx.help.client.model.HelpPageResult;
+import gen.org.tkit.onecx.help.client.model.ProblemDetailResponse;
 
 @ApplicationScoped
 @Transactional(value = Transactional.TxType.NOT_SUPPORTED)

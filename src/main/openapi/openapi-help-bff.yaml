@@ -10,6 +10,10 @@ tags:
 paths:
   /helps:
     post:
+      x-onecx:
+        permissions:
+          helps:
+            - write
       tags:
         - helpsInternal
       description: Create new help
@@ -41,6 +45,10 @@ paths:
                 $ref: '#/components/schemas/ProblemDetailResponse'
   /helps/appIds:
     get:
+      x-onecx:
+        permissions:
+          helps:
+            - read
       tags:
         - helpsInternal
       summary: Get all application IDs to which help items are assigned
@@ -54,6 +62,10 @@ paths:
                 $ref: '#/components/schemas/HelpAppIds'
   /helps/{id}:
     get:
+      x-onecx:
+        permissions:
+          helps:
+            - read
       tags:
         - helpsInternal
       description: Return help by ID
@@ -74,6 +86,10 @@ paths:
         "404":
           description: Not found
     put:
+      x-onecx:
+        permissions:
+          helps:
+            - write
       tags:
         - helpsInternal
       description: Update help by ID
@@ -102,6 +118,10 @@ paths:
         "404":
           description: Help not found
     delete:
+      x-onecx:
+        permissions:
+          helps:
+            - delete
       tags:
         - helpsInternal
       description: Delete help by ID
@@ -117,6 +137,10 @@ paths:
           description: No Content
   /helps/search:
     post:
+      x-onecx:
+        permissions:
+          helps:
+            - read
       tags:
         - helpsInternal
       description: Search for helps
