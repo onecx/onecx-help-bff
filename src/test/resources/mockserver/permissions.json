@@ -5,7 +5,7 @@
       "headers": {
         "apm-principal-token": [ "alice" ]
       },
-      "path": "/v1/permissions/user/application/onecx-help-bff"
+      "path": "/v1/permissions/user/applications/onecx-help-bff"
     },
     "httpResponse": {
       "body": {
@@ -27,7 +27,7 @@
       "headers": {
         "apm-principal-token": [ "bob" ]
       },
-      "path": "/v1/permissions/user/application/onecx-help-bff"
+      "path": "/v1/permissions/user/applications/onecx-help-bff"
     },
     "httpResponse": {
       "body": {
