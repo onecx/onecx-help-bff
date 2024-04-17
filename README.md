@@ -1,2 +1,2 @@
 # onecx-help-bff
-OneCx help BFF
+OneCX Help BFF

@@ -137,7 +137,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>src/main/openapi/openapi-help-bff.yaml</inputSpec>
+                            <inputSpec>src/main/openapi/openapi-bff.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.help.bff.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.help.bff.rs.internal.model</modelPackage>
                         </configuration>
@@ -176,7 +176,7 @@
                 <artifactId>download-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>help-bff</id>
+                        <id>help-svc-internal</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>wget</goal>
