@@ -254,9 +254,7 @@ class HelpRestControllerTest extends AbstractTest {
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
                 .withId(MOCK_ID)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(Response.status(Response.Status.NOT_FOUND).build())));
+                .respond(httpRequest -> response().withStatusCode(Response.Status.NOT_FOUND.getStatusCode()));
 
         // bff call
         var response = given()
