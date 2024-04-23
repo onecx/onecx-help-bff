@@ -265,7 +265,6 @@ class HelpRestControllerTest extends AbstractTest {
                 .get(id)
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
-
         Assertions.assertNotNull(response);
 
     }
