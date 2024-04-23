@@ -1,0 +1,5 @@
+
+:docker-registry: https://github.com/onecx/onecx-help-bff/pkgs/container/onecx-help-bff
+:helm-registry: https://github.com/onecx/onecx-help-bff/pkgs/container/charts%2Fonecx-help-bff
+:properties-file: src/main/resources/application.properties
+:helm-file: src/main/helm/values.yaml
