@@ -14,6 +14,7 @@ quarkus.http.auth.permission.default.paths=/*
 quarkus.http.auth.permission.default.policy=authenticated
 onecx.permissions.application-id=${quarkus.application.name}
 %prod.quarkus.rest-client.onecx_help_svc.url=http://onecx-help-svc:8080
+%prod.quarkus.rest-client.onecx_product_store.url=http://onecx-product-store-svc:8080
 %prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.config-key=onecx_help_svc
@@ -22,6 +23,11 @@ quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.return-response=true
 quarkus.openapi-generator.codegen.input-base-dir=target/tmp/openapi
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
+quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.config-key=onecx_product_store
+quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.base-package=gen.org.tkit.onecx.product.store
+quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.return-response=true
+quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
 ----
 ====
 
@@ -53,10 +59,12 @@ app:
       enabled: true
       spec:
         permissions:
-          helps:
+          help:
             read: permission on all GET requests and POST search
             write: permission on PUT, POST, PATCH requests, where objects are saved or updated
             delete: permission on all DELETE requests
+          product:
+            read: permission on all GET requests and POST search
     keycloak:
       client:
         enabled: true
