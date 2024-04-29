@@ -16,15 +16,21 @@ public class BffLogParam implements LogParam {
         return List.of(
                 item(10, CreateHelpDTO.class, x -> {
                     CreateHelpDTO d = (CreateHelpDTO) x;
-                    return CreateHelpDTO.class.getSimpleName() + "[" + d.getAppId() + "," + d.getItemId() + "]";
+                    return CreateHelpDTO.class.getSimpleName() + "[" + d.getProductName() + "," + d.getItemId() + "]";
                 }),
                 item(10, UpdateHelpDTO.class, x -> {
                     UpdateHelpDTO d = (UpdateHelpDTO) x;
-                    return UpdateHelpDTO.class.getSimpleName() + "[" + d.getAppId() + "," + d.getItemId() + "]";
+                    return UpdateHelpDTO.class.getSimpleName() + "[" + d.getProductName() + "," + d.getItemId() + "]";
                 }),
                 item(10, HelpSearchCriteriaDTO.class, x -> {
                     HelpSearchCriteriaDTO d = (HelpSearchCriteriaDTO) x;
                     return HelpSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + ","
+                            + d.getPageSize()
+                            + "]";
+                }),
+                item(10, ProductsSearchCriteriaDTO.class, x -> {
+                    ProductsSearchCriteriaDTO d = (ProductsSearchCriteriaDTO) x;
+                    return ProductsSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + ","
                             + d.getPageSize()
                             + "]";
                 }));

@@ -23,6 +23,9 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.help.client.model.*;
+import gen.org.tkit.onecx.product.store.model.ProductItem;
+import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
+import gen.org.tkit.onecx.product.store.model.ProductItemSearchCriteria;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -88,7 +91,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .extract().as(HelpDTO.class);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(data.getAppId(), response.getAppId());
+        Assertions.assertEquals(data.getProductName(), response.getProductName());
         Assertions.assertEquals(offsetDateTimeMapper.map(data.getCreationDate()),
                 offsetDateTimeMapper.map(response.getCreationDate()));
         Assertions.assertEquals(data.getBaseUrl(), response.getBaseUrl());
@@ -175,14 +178,14 @@ class HelpRestControllerTest extends AbstractTest {
     @Test
     void getAllAppsWithHelpItems_shouldReturnHelpAppIdsDTO() {
 
-        HelpAppIds data = new HelpAppIds();
-        List<String> appIds = new ArrayList<>();
-        appIds.add("appId1");
-        appIds.add("appId2");
-        data.setAppIds(appIds);
+        HelpProductNames data = new HelpProductNames();
+        List<String> productNames = new ArrayList<>();
+        productNames.add("appId1");
+        productNames.add("appId2");
+        data.setProductNames(productNames);
 
         mockServerClient
-                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/appIds")
+                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/productNames")
                         .withMethod(HttpMethod.GET))
                 .withPriority(100)
                 .withId(MOCK_ID)
@@ -196,14 +199,14 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .get("/appIds")
+                .get("/productNames")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
-                .extract().as(HelpAppIdsDTO.class);
+                .extract().as(HelpProductNamesDTO.class);
 
         Assertions.assertNotNull(response);
-        Assertions.assertEquals(data.getAppIds(), response.getAppIds());
-        Assertions.assertEquals(2, data.getAppIds().size());
+        Assertions.assertEquals(data.getProductNames(), response.getProductNames());
+        Assertions.assertEquals(2, data.getProductNames().size());
     }
 
     @Test
@@ -331,7 +334,7 @@ class HelpRestControllerTest extends AbstractTest {
                         .withBody(JsonBody.json(data)));
 
         HelpSearchCriteriaDTO helpSearchCriteriaDTO = new HelpSearchCriteriaDTO();
-        helpSearchCriteriaDTO.setAppId("appId1");
+        helpSearchCriteriaDTO.setProductName("appId1");
         helpSearchCriteriaDTO.setBaseUrl("http://localhost:8080/mfe");
         helpSearchCriteriaDTO.setItemId("itemId1");
 
@@ -367,7 +370,7 @@ class HelpRestControllerTest extends AbstractTest {
 
         UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
         updateHelpDTO.setModificationCount(0);
-        updateHelpDTO.setAppId("appId1");
+        updateHelpDTO.setProductName("appId1");
         updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
         updateHelpDTO.setItemId("itemId1");
 
@@ -403,7 +406,7 @@ class HelpRestControllerTest extends AbstractTest {
 
         UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
         updateHelpDTO.setModificationCount(0);
-        updateHelpDTO.setAppId("appId1");
+        updateHelpDTO.setProductName("appId1");
         updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
         updateHelpDTO.setItemId("itemId1");
 
@@ -423,6 +426,48 @@ class HelpRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getAllProductsTest() {
+
+        ProductItemSearchCriteria criteria = new ProductItemSearchCriteria();
+        criteria.pageNumber(0).pageSize(1);
+        ProductItemPageResult result = new ProductItemPageResult();
+        result.totalElements(2L).stream(List.of(new ProductItem().name("P1").displayName("Product1"),
+                new ProductItem().name("P2").displayName("Product2")));
+
+        mockServerClient
+                .when(request().withPath("/v1/products/search")
+                        .withMethod(HttpMethod.POST)
+                        .withBody(JsonBody.json(criteria)))
+                .withPriority(100)
+                .withId(MOCK_ID)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(result)));
+
+        ProductsSearchCriteriaDTO criteriaDTO = new ProductsSearchCriteriaDTO();
+        criteriaDTO.pageNumber(0).pageSize(1);
+        // bff call
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .body(criteriaDTO)
+                .post("/products")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .contentType(APPLICATION_JSON)
+                .extract().as(ProductsPageResultDTO.class);
+
+        Assertions.assertEquals(2, response.getStream().size());
+        Assertions.assertEquals("P1", response.getStream().get(0).getName());
+        Assertions.assertEquals("Product1", response.getStream().get(0).getDisplayName());
+        Assertions.assertEquals("P2", response.getStream().get(1).getName());
+        Assertions.assertEquals("Product2", response.getStream().get(1).getDisplayName());
+        mockServerClient.clear(MOCK_ID);
+    }
+
+    @Test
     void errorSecurityTest() {
         String id = "82689h23-9624-2234-c50b-8749d073c287";
 
@@ -438,7 +483,7 @@ class HelpRestControllerTest extends AbstractTest {
 
         UpdateHelpDTO updateHelpDTO = new UpdateHelpDTO();
         updateHelpDTO.setModificationCount(0);
-        updateHelpDTO.setAppId("appId1");
+        updateHelpDTO.setProductName("appId1");
         updateHelpDTO.setBaseUrl("http://localhost:8080/mfe");
         updateHelpDTO.setItemId("itemId1");
 
@@ -467,7 +512,7 @@ class HelpRestControllerTest extends AbstractTest {
     private Help createHelp(String appId, String id, String context, OffsetDateTime creationDate, String baseUrl,
             String creationUser, String itemId) {
         Help help = new Help();
-        help.setAppId(appId);
+        help.setProductName(appId);
         help.setId(id);
         help.setContext(context);
         help.setCreationDate(creationDate);
@@ -480,7 +525,7 @@ class HelpRestControllerTest extends AbstractTest {
 
     private CreateHelpDTO createHelpDTO(String appId, String context, String baseUrl, String itemId) {
         CreateHelpDTO helpDTO = new CreateHelpDTO();
-        helpDTO.setAppId(appId);
+        helpDTO.setProductName(appId);
         helpDTO.setContext(context);
         helpDTO.setBaseUrl(baseUrl);
         helpDTO.setItemId(itemId);

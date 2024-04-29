@@ -20,9 +20,11 @@ import gen.org.tkit.onecx.help.bff.rs.internal.HelpsInternalApiService;
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.help.client.api.HelpsInternalApi;
 import gen.org.tkit.onecx.help.client.model.Help;
-import gen.org.tkit.onecx.help.client.model.HelpAppIds;
 import gen.org.tkit.onecx.help.client.model.HelpPageResult;
+import gen.org.tkit.onecx.help.client.model.HelpProductNames;
 import gen.org.tkit.onecx.help.client.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.product.store.api.ProductsApi;
+import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
 
 @ApplicationScoped
 @Transactional(value = Transactional.TxType.NOT_SUPPORTED)
@@ -32,6 +34,10 @@ public class HelpRestController implements HelpsInternalApiService {
     @Inject
     @RestClient
     HelpsInternalApi client;
+
+    @Inject
+    @RestClient
+    ProductsApi productStoreClient;
 
     @Inject
     HelpMapper helpMapper;
@@ -61,11 +67,10 @@ public class HelpRestController implements HelpsInternalApiService {
     }
 
     @Override
-    public Response getAllAppsWithHelpItems() {
-
-        try (Response response = client.getAllAppsWithHelpItems()) {
-            HelpAppIds helpAppIds = response.readEntity(HelpAppIds.class);
-            HelpAppIdsDTO helpAppIdsDTO = helpMapper.mapHelpAppIds(helpAppIds);
+    public Response getAllProductsWithHelpItems() {
+        try (Response response = client.getAllProductsWithHelpItems()) {
+            HelpProductNames helpProductNames = response.readEntity(HelpProductNames.class);
+            HelpProductNamesDTO helpAppIdsDTO = helpMapper.mapHelpProductNames(helpProductNames);
             return Response.status(response.getStatus()).entity(helpAppIdsDTO).build();
         }
     }
@@ -86,6 +91,14 @@ public class HelpRestController implements HelpsInternalApiService {
             HelpPageResult helpPageResult = response.readEntity(HelpPageResult.class);
             HelpPageResultDTO helpPageResultDTO = helpMapper.mapHelpPageResults(helpPageResult);
             return Response.status(response.getStatus()).entity(helpPageResultDTO).build();
+        }
+    }
+
+    @Override
+    public Response searchProductsByCriteria(ProductsSearchCriteriaDTO productsSearchCriteriaDTO) {
+        try (Response response = productStoreClient.searchProductsByCriteria(helpMapper.map(productsSearchCriteriaDTO))) {
+            ProductsPageResultDTO products = helpMapper.map(response.readEntity(ProductItemPageResult.class));
+            return Response.status(response.getStatus()).entity(products).build();
         }
     }
 
