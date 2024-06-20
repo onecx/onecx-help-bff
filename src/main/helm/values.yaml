@@ -17,4 +17,3 @@ app:
     keycloak:
       client:
         enabled: true
-        password: "my-custom-password"

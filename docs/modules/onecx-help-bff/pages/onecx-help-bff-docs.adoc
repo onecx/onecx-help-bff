@@ -15,8 +15,10 @@ quarkus.http.auth.permission.default.policy=authenticated
 onecx.permissions.application-id=${quarkus.application.name}
 %prod.quarkus.rest-client.onecx_help_svc.url=http://onecx-help-svc:8080
 %prod.quarkus.rest-client.onecx_product_store.url=http://onecx-product-store-svc:8080
-%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
+%prod.quarkus.rest-client.onecx_help_svc_yaml.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
+%prod.quarkus.rest-client.onecx_product_store_v1_yaml.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
+%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.config-key=onecx_help_svc
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.base-package=gen.org.tkit.onecx.help.client
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.return-response=true
@@ -68,7 +70,6 @@ app:
     keycloak:
       client:
         enabled: true
-        password: "my-custom-password"
 
 ----
 
