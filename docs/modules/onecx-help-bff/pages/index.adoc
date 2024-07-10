@@ -2,7 +2,4 @@ include::onecx-help-bff-attributes.adoc[opts=optional]
 
 == onecx-help-bff
 
-include::docs.adoc[opts=optional]
-
-
 include::onecx-help-bff-docs.adoc[opts=optional]
