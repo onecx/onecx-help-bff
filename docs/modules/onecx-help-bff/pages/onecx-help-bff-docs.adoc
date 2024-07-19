@@ -19,7 +19,6 @@ org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
 %prod.quarkus.rest-client.onecx_help_svc.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
 %prod.quarkus.rest-client.onecx_product_store.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
 %prod.quarkus.oidc-client.client-id=${quarkus.application.name}
-generator.codegen.enable-security-generation=false
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.config-key=onecx_help_svc
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.base-package=gen.org.tkit.onecx.help.client
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.return-response=true
@@ -76,7 +75,11 @@ app:
         enabled: true
         spec:
           kcConfig:
-            defaultClientScopes: [ ocx-hp:all, ocx-ps:read ]
+            defaultClientScopes: [ ocx-hp:all, ocx-ps:read, ocx-pm:read ]
+
+----
+
+s: [ ocx-hp:all, ocx-ps:read ]
 
 ----
 
