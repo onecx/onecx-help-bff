@@ -214,7 +214,6 @@ class HelpRestControllerTest extends AbstractTest {
 
         String id = "82689h23-9624-2234-c50b-8749d073c287";
         var offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
-        OffsetDateTimeMapper offsetDateTimeMapper = new OffsetDateTimeMapper();
         Help data = createHelp("appId1",
                 "123-456-789",
                 "testContext",
