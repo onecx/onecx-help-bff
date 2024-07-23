@@ -467,6 +467,43 @@ class HelpRestControllerTest extends AbstractTest {
     }
 
     @Test
+    void getProductNameItemIdTest() {
+
+        var offsetDateTime = OffsetDateTime.parse("2023-11-30T13:53:03.688710200+01:00");
+        Help data = createHelp("p1",
+                "i1",
+                "testContext",
+                offsetDateTime,
+                "http://localhost:8080/mfe",
+                "testUser",
+                "itemId1");
+
+        mockServerClient
+                .when(request().withPath(HELP_SVC_INTERNAL_API_BASE_PATH + "/p1/i1")
+                        .withMethod(HttpMethod.GET))
+                .withPriority(100)
+                .withId(MOCK_ID)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON)
+                        .withBody(JsonBody.json(data)));
+
+        // bff call
+        var response = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .get("/p1/i1")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract().as(HelpDTO.class);
+
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(data.getItemId(), response.getItemId());
+        Assertions.assertEquals(data.getProductName(), response.getProductName());
+    }
+
+    @Test
     void errorSecurityTest() {
         String id = "82689h23-9624-2234-c50b-8749d073c287";
 

@@ -85,6 +85,15 @@ public class HelpRestController implements HelpsInternalApiService {
     }
 
     @Override
+    public Response getHelpByProductNameItemId(String productName, String helpItemId) {
+        try (Response response = client.getHelpByProductNameItemId(productName, helpItemId)) {
+            Help help = response.readEntity(Help.class);
+            HelpDTO helpDTO = helpMapper.mapHelp(help);
+            return Response.ok(helpDTO).build();
+        }
+    }
+
+    @Override
     public Response searchHelps(HelpSearchCriteriaDTO helpSearchCriteriaDTO) {
 
         try (Response response = client.searchHelps(helpMapper.mapHelpSearchCriteria(helpSearchCriteriaDTO))) {
