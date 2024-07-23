@@ -192,6 +192,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HelpPageResult'
+  /helps/{productName}/{helpItemId}:
+    get:
+      x-onecx:
+        permissions:
+          help:
+            - read
+      tags:
+        - helpsInternal
+      description: search help item by product name and item id
+      operationId: getHelpByProductNameItemId
+      parameters:
+        - name: productName
+          in: path
+          required: true
+          description: product name
+          schema:
+            type: string
+        - name: helpItemId
+          in: path
+          required: true
+          description: help item ID
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Help'
+        404:
+          description: Help not found
 components:
   schemas:
     HelpSearchCriteria:
