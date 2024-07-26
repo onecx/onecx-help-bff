@@ -1,5 +1,7 @@
 package org.tkit.onecx.help.bff.rs.controller;
 
+import java.util.Map;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -12,6 +14,7 @@ import org.jboss.resteasy.reactive.ClientWebApplicationException;
 import org.jboss.resteasy.reactive.RestResponse;
 import org.jboss.resteasy.reactive.server.ServerExceptionMapper;
 import org.tkit.onecx.help.bff.rs.mappers.ExceptionMapper;
+import org.tkit.onecx.help.bff.rs.mappers.EximHelpMapper;
 import org.tkit.onecx.help.bff.rs.mappers.HelpMapper;
 import org.tkit.onecx.help.bff.rs.mappers.ProblemDetailMapper;
 import org.tkit.quarkus.log.cdi.LogService;
@@ -23,6 +26,8 @@ import gen.org.tkit.onecx.help.client.model.Help;
 import gen.org.tkit.onecx.help.client.model.HelpPageResult;
 import gen.org.tkit.onecx.help.client.model.HelpProductNames;
 import gen.org.tkit.onecx.help.client.model.ProblemDetailResponse;
+import gen.org.tkit.onecx.help.exim.client.api.HelpExportImportApi;
+import gen.org.tkit.onecx.help.exim.client.model.HelpSnapshot;
 import gen.org.tkit.onecx.product.store.api.ProductsApi;
 import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
 
@@ -37,10 +42,17 @@ public class HelpRestController implements HelpsInternalApiService {
 
     @Inject
     @RestClient
+    HelpExportImportApi eximClient;
+
+    @Inject
+    @RestClient
     ProductsApi productStoreClient;
 
     @Inject
     HelpMapper helpMapper;
+
+    @Inject
+    EximHelpMapper eximHelpMapper;
 
     @Inject
     ProblemDetailMapper problemDetailMapper;
@@ -63,6 +75,15 @@ public class HelpRestController implements HelpsInternalApiService {
 
         try (Response response = client.deleteHelp(id)) {
             return Response.status(response.getStatus()).build();
+        }
+    }
+
+    @Override
+    public Response exportHelps(ExportHelpsRequestDTO exportHelpsRequestDTO) {
+        try (Response response = eximClient.exportHelpsByProducts(eximHelpMapper.map(exportHelpsRequestDTO))) {
+            return Response.status(response.getStatus())
+                    .entity(response.readEntity(HelpSnapshot.class))
+                    .build();
         }
     }
 
@@ -90,6 +111,13 @@ public class HelpRestController implements HelpsInternalApiService {
             Help help = response.readEntity(Help.class);
             HelpDTO helpDTO = helpMapper.mapHelp(help);
             return Response.ok(helpDTO).build();
+        }
+    }
+
+    @Override
+    public Response importHelps(Map body) {
+        try (Response response = eximClient.importHelps(eximHelpMapper.createSnapshot(body))) {
+            return Response.status(response.getStatus()).build();
         }
     }
 

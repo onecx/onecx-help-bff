@@ -140,6 +140,7 @@
                             <inputSpec>src/main/openapi/openapi-bff.yaml</inputSpec>
                             <apiPackage>gen.org.tkit.onecx.help.bff.rs.internal</apiPackage>
                             <modelPackage>gen.org.tkit.onecx.help.bff.rs.internal.model</modelPackage>
+                            <typeMappings>Object=Map</typeMappings>
                         </configuration>
                     </execution>
                 </executions>
@@ -187,6 +188,21 @@
                             </uri>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-help-svc.yaml</outputFileName>
+                            <skipCache>true</skipCache>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>help-svc-exim-v1</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>wget</goal>
+                        </goals>
+                        <configuration>
+                            <url>
+                                https://raw.githubusercontent.com/onecx/onecx-help-svc/main/src/main/openapi/onecx-help-exim-v1-openapi.yaml
+                            </url>
+                            <outputDirectory>target/tmp/openapi</outputDirectory>
+                            <outputFileName>onecx-help-svc-exim-v1.yaml</outputFileName>
                             <skipCache>true</skipCache>
                         </configuration>
                     </execution>

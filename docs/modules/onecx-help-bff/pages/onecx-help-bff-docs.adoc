@@ -27,6 +27,12 @@ quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.additional-api-type-a
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
 quarkus.openapi-generator.onecx_help_svc_yaml.auth.oauth2.token-propagation=false
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.enable-security-generation=false
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.config-key=onecx_help_svc
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.base-package=gen.org.tkit.onecx.help.exim.client
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.return-response=true
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.additional-api-type-annotations=@org.eclipse.microprofile.rest.client.annotation.RegisterClientHeaders;
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.additional-model-type-annotations=@io.quarkus.runtime.annotations.RegisterForReflection;
+quarkus.openapi-generator.codegen.spec.onecx_help_svc_exim_v1_yaml.enable-security-generation=false
 quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.config-key=onecx_product_store
 quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.base-package=gen.org.tkit.onecx.product.store
 quarkus.openapi-generator.codegen.spec.onecx_product_store_v1_yaml.return-response=true
@@ -76,10 +82,6 @@ app:
         spec:
           kcConfig:
             defaultClientScopes: [ ocx-hp:all, ocx-ps:read, ocx-pm:read ]
-
-----
-
-s: [ ocx-hp:all, ocx-ps:read ]
 
 ----
 

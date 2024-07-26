@@ -31,4 +31,5 @@ public interface HelpMapper {
 
     @Mapping(target = "removeStreamItem", ignore = true)
     ProductsPageResultDTO map(ProductItemPageResult productItemPageResult);
+
 }
