@@ -2,12 +2,12 @@ package org.tkit.onecx.help.bff.rs;
 
 import static io.restassured.RestAssured.given;
 import static jakarta.ws.rs.core.MediaType.APPLICATION_JSON;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import jakarta.ws.rs.HttpMethod;
 import jakarta.ws.rs.core.Response;
@@ -23,6 +23,8 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.help.client.model.*;
+import gen.org.tkit.onecx.help.exim.client.model.EximHelp;
+import gen.org.tkit.onecx.help.exim.client.model.HelpSnapshot;
 import gen.org.tkit.onecx.product.store.model.ProductItem;
 import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
 import gen.org.tkit.onecx.product.store.model.ProductItemSearchCriteria;
@@ -543,6 +545,59 @@ class HelpRestControllerTest extends AbstractTest {
                 .delete(id)
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
+    }
+
+    @Test
+    void importWorkspacesTest() {
+        HelpSnapshot request = new HelpSnapshot();
+        request.id(UUID.randomUUID().toString()).created(OffsetDateTime.now()).helps(
+                Map.of("proudct1", Map.of("item1", new EximHelp().baseUrl("url"))));
+
+        // create mock rest endpoint
+        mockServerClient.when(request().withPath("/exim/v1/help/import").withMethod(HttpMethod.POST))
+                .withId(MOCK_ID)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON));
+
+        given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/import")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode());
+    }
+
+    @Test
+    void exportWorkspacesTest() {
+        HelpSnapshot snapshot = new HelpSnapshot();
+        snapshot.id(UUID.randomUUID().toString()).created(OffsetDateTime.now()).helps(
+                Map.of("proudct1", Map.of("item1", new EximHelp().baseUrl("url"))));
+
+        // create mock rest endpoint
+        mockServerClient.when(request().withPath("/exim/v1/help/export").withMethod(HttpMethod.POST))
+                .withId(MOCK_ID)
+                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
+                        .withContentType(MediaType.APPLICATION_JSON).withBody(JsonBody.json(snapshot)));
+
+        ExportHelpsRequestDTO request = new ExportHelpsRequestDTO().addProductNamesItem("product1");
+
+        var tmp = given()
+                .when()
+                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
+                .header(APM_HEADER_PARAM, ADMIN)
+                .contentType(APPLICATION_JSON)
+                .body(request)
+                .post("/export")
+                .then()
+                .statusCode(Response.Status.OK.getStatusCode())
+                .extract().as(HelpSnapshot.class);
+
+        assertThat(tmp).isNotNull();
+        assertThat(tmp.getId()).isEqualTo(snapshot.getId());
+        assertThat(tmp.getHelps()).isNotNull().hasSize(1);
     }
 
     private Help createHelp(String appId, String id, String context, OffsetDateTime creationDate, String baseUrl,
