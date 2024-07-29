@@ -333,6 +333,8 @@ components:
         - itemId
       type: object
       properties:
+        operator:
+          type: boolean
         modificationCount:
           format: int32
           type: integer
