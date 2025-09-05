@@ -1,12 +1,14 @@
 ---
 openapi: 3.0.3
 info:
-  title: onecx-help bff
+  title: onecx-help-bff
+  description: Backend-For-Frontend (BFF) service for onecx-help. This API provides endpoints to manage Help items.
   version: 1.0.0
 servers:
   - url: "http://onecx-help-bff:8080"
 tags:
   - name: helpsInternal
+    description: Managing Help items
 paths:
   /helps:
     post:
@@ -16,7 +18,7 @@ paths:
             - write
       tags:
         - helpsInternal
-      description: Create new help
+      description: Create a new help item
       operationId: createNewHelp
       requestBody:
         required: true
@@ -26,7 +28,7 @@ paths:
               $ref: '#/components/schemas/CreateHelp'
       responses:
         "201":
-          description: New help created
+          description: Help item created successfully
           headers:
             Location:
               required: true
@@ -51,11 +53,11 @@ paths:
             - read
       tags:
         - helpsInternal
-      summary: Get all product names to which help items are assigned
+      description: Get all product names to which help items are assigned to
       operationId: getAllProductsWithHelpItems
       responses:
         "200":
-          description: OK
+          description: Product names retrieved successfully
           content:
             application/json:
               schema:
@@ -74,7 +76,7 @@ paths:
             - read
       tags:
         - helpsInternal
-      summary: Get all products to which help items are assigned
+      description: Get all products to which help items are assigned to
       operationId: searchProductsByCriteria
       requestBody:
         content:
@@ -83,7 +85,7 @@ paths:
               $ref: '#/components/schemas/ProductsSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Product search results retrieved successfully
           content:
             application/json:
               schema:
@@ -102,7 +104,7 @@ paths:
             - read
       tags:
         - helpsInternal
-      description: Return help by ID
+      description: Get help item by its id
       operationId: getHelpById
       parameters:
         - name: id
@@ -112,13 +114,13 @@ paths:
             type: string
       responses:
         "200":
-          description: OK
+          description: Help item retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Help'
         "404":
-          description: Not found
+          description: Help item not found
     put:
       x-onecx:
         permissions:
@@ -126,7 +128,7 @@ paths:
             - write
       tags:
         - helpsInternal
-      description: Update help by ID
+      description: Update a help item by its id
       operationId: updateHelp
       parameters:
         - name: id
@@ -142,7 +144,7 @@ paths:
               $ref: '#/components/schemas/UpdateHelp'
       responses:
         "204":
-          description: Help updated
+          description: Help item updated successfully
         "400":
           description: Bad request
           content:
@@ -150,7 +152,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
         "404":
-          description: Help not found
+          description: Help item not found
     delete:
       x-onecx:
         permissions:
@@ -158,7 +160,7 @@ paths:
             - delete
       tags:
         - helpsInternal
-      description: Delete help by ID
+      description: Delete a help item by its id
       operationId: deleteHelp
       parameters:
         - name: id
@@ -168,7 +170,7 @@ paths:
             type: string
       responses:
         "204":
-          description: No Content
+          description: Help item deleted successfully
   /helps/search:
     post:
       x-onecx:
@@ -177,7 +179,7 @@ paths:
             - read
       tags:
         - helpsInternal
-      description: Search for helps
+      description: Search for help items by search criteria
       operationId: searchHelps
       requestBody:
         required: true
@@ -187,7 +189,7 @@ paths:
               $ref: '#/components/schemas/HelpSearchCriteria'
       responses:
         "200":
-          description: OK
+          description: Help search results retrieved successfully
           content:
             application/json:
               schema:
@@ -200,7 +202,7 @@ paths:
             - read
       tags:
         - helpsInternal
-      description: search help item by product name and item id
+      description: Get a help item by its id and product name
       operationId: getHelpByProductNameItemId
       parameters:
         - name: productName
@@ -217,13 +219,13 @@ paths:
             type: string
       responses:
         200:
-          description: OK
+          description: Help item retrieved successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Help'
         404:
-          description: Help not found
+          description: Help item not found
   /helps/export:
     x-onecx:
       permissions:
@@ -232,7 +234,7 @@ paths:
     post:
       tags:
         - helpsInternal
-      description: Export helps
+      description: Export help items
       operationId: exportHelps
       requestBody:
         required: true
@@ -242,13 +244,13 @@ paths:
               $ref: '#/components/schemas/ExportHelpsRequest'
       responses:
         "200":
-          description: OK
+          description: Help items exported successfully
           content:
             application/json:
               schema:
                 type: object
         "404":
-          description: No helps founds
+          description: Help items not found
   /helps/import:
     x-onecx:
       permissions:
@@ -257,7 +259,7 @@ paths:
     post:
       tags:
         - helpsInternal
-      description: Import helps
+      description: Import a help item
       operationId: importHelps
       requestBody:
         required: true
@@ -267,7 +269,7 @@ paths:
               type: object
       responses:
         "200":
-          description: Import result
+          description: Help items imported successfully
         "400":
           description: Bad request
           content:

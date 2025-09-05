@@ -184,7 +184,7 @@
                         </goals>
                         <configuration>
                             <uri>
-                                https://raw.githubusercontent.com/onecx/onecx-help-svc/main/src/main/openapi/onecx-help-internal-openapi.yaml
+                                https://raw.githubusercontent.com/onecx/onecx-help-svc/main/src/main/openapi/onecx-help-internal.yaml
                             </uri>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-help-svc.yaml</outputFileName>
@@ -199,7 +199,7 @@
                         </goals>
                         <configuration>
                             <url>
-                                https://raw.githubusercontent.com/onecx/onecx-help-svc/main/src/main/openapi/onecx-help-exim-v1-openapi.yaml
+                                https://raw.githubusercontent.com/onecx/onecx-help-svc/main/src/main/openapi/onecx-help-exim-v1.yaml
                             </url>
                             <outputDirectory>target/tmp/openapi</outputDirectory>
                             <outputFileName>onecx-help-svc-exim-v1.yaml</outputFileName>
