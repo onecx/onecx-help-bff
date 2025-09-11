@@ -168,7 +168,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .delete(id)
+                .queryParam("id", id)
+                .delete()
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
@@ -239,7 +240,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .get(id)
+                .queryParam("id", id)
+                .get()
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(HelpDTO.class);
@@ -266,7 +268,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .get(id)
+                .queryParam("id", id)
+                .get()
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
         Assertions.assertNotNull(response);
@@ -382,7 +385,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .put(id)
+                .queryParam("id", id)
+                .put()
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
@@ -418,7 +422,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .put("/82689h23-9624-2234-c50b-8749d073c287")
+                .queryParam("id", "82689h23-9624-2234-c50b-8749d073c287")
+                .put()
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode())
                 .contentType(APPLICATION_JSON)
@@ -495,7 +500,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .get("/p1/i1")
+                .queryParam("helpItemId", "i1")
+                .get("/p1")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(HelpDTO.class);
@@ -532,7 +538,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, USER)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .put(id)
+                .queryParam("id", id)
+                .put()
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
 
@@ -542,7 +549,8 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(USER))
                 .header(APM_HEADER_PARAM, USER)
                 .contentType(APPLICATION_JSON)
-                .delete(id)
+                .queryParam("id", id)
+                .delete()
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
