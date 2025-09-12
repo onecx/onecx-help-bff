@@ -45,6 +45,80 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+    get:
+      x-onecx:
+        permissions:
+          help:
+            - read
+      tags:
+        - helpsInternal
+      description: Get help item by its id
+      operationId: getHelpById
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Help item retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Help'
+        "404":
+          description: Help item not found
+    put:
+      x-onecx:
+        permissions:
+          help:
+            - write
+      tags:
+        - helpsInternal
+      description: Update a help item by its id
+      operationId: updateHelp
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateHelp'
+      responses:
+        "204":
+          description: Help item updated successfully
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponse'
+        "404":
+          description: Help item not found
+    delete:
+      x-onecx:
+        permissions:
+          help:
+            - delete
+      tags:
+        - helpsInternal
+      description: Delete a help item by its id
+      operationId: deleteHelp
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Help item deleted successfully
   /helps/productNames:
     get:
       x-onecx:
@@ -96,81 +170,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /helps/{id}:
-    get:
-      x-onecx:
-        permissions:
-          help:
-            - read
-      tags:
-        - helpsInternal
-      description: Get help item by its id
-      operationId: getHelpById
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Help item retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Help'
-        "404":
-          description: Help item not found
-    put:
-      x-onecx:
-        permissions:
-          help:
-            - write
-      tags:
-        - helpsInternal
-      description: Update a help item by its id
-      operationId: updateHelp
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateHelp'
-      responses:
-        "204":
-          description: Help item updated successfully
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
-        "404":
-          description: Help item not found
-    delete:
-      x-onecx:
-        permissions:
-          help:
-            - delete
-      tags:
-        - helpsInternal
-      description: Delete a help item by its id
-      operationId: deleteHelp
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "204":
-          description: Help item deleted successfully
   /helps/search:
     post:
       x-onecx:
@@ -194,7 +193,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HelpPageResult'
-  /helps/{productName}/{helpItemId}:
+  /helps/{productName}:
     get:
       x-onecx:
         permissions:
@@ -212,7 +211,7 @@ paths:
           schema:
             type: string
         - name: helpItemId
-          in: path
+          in: query
           required: true
           description: help item ID
           schema:
