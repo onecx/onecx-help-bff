@@ -27,12 +27,6 @@ public class BffLogParam implements LogParam {
                     return HelpSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + ","
                             + d.getPageSize()
                             + "]";
-                }),
-                item(10, ProductsSearchCriteriaDTO.class, x -> {
-                    ProductsSearchCriteriaDTO d = (ProductsSearchCriteriaDTO) x;
-                    return ProductsSearchCriteriaDTO.class.getSimpleName() + "[" + d.getPageNumber() + ","
-                            + d.getPageSize()
-                            + "]";
                 }));
     }
 }

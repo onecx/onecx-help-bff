@@ -45,6 +45,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
+  /helps/{id}:
     get:
       x-onecx:
         permissions:
@@ -56,7 +57,7 @@ paths:
       operationId: getHelpById
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -80,7 +81,7 @@ paths:
       operationId: updateHelp
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -112,7 +113,7 @@ paths:
       operationId: deleteHelp
       parameters:
         - name: id
-          in: query
+          in: path
           required: true
           schema:
             type: string
@@ -142,34 +143,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailResponse'
-  /helps/products:
-    post:
-      x-onecx:
-        permissions:
-          product:
-            - read
-      tags:
-        - helpsInternal
-      description: Get all products to which help items are assigned to
-      operationId: searchProductsByCriteria
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductsSearchCriteria'
-      responses:
-        "200":
-          description: Product search results retrieved successfully
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductsPageResult'
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetailResponse'
   /helps/search:
     post:
       x-onecx:
@@ -193,7 +166,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HelpPageResult'
-  /helps/{productName}:
+  /helps/item/{productName}:
     get:
       x-onecx:
         permissions:
@@ -201,7 +174,7 @@ paths:
             - read
       tags:
         - helpsInternal
-      description: Get a help item by its id and product name
+      description: Get a help item by its id and product name. If not exist, a default item will be created and returned.
       operationId: getHelpByProductNameItemId
       parameters:
         - name: productName
@@ -379,20 +352,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
-    ProductsSearchCriteria:
-      type: object
-      properties:
-        pageNumber:
-          format: int32
-          description: The number of page.
-          default: 0
-          type: integer
-        pageSize:
-          format: int32
-          description: The size of page
-          default: 100
-          maximum: 1000
-          type: integer
     Product:
       type: object
       required:
@@ -476,7 +435,7 @@ components:
     HelpProductNames:
       type: object
       properties:
-        ProductNames:
+        productNames:
           type: array
           items:
             type: string
