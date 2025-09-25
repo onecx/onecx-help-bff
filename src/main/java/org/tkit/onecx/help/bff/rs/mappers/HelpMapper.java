@@ -6,8 +6,6 @@ import org.tkit.quarkus.rs.mappers.OffsetDateTimeMapper;
 
 import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.help.client.model.*;
-import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
-import gen.org.tkit.onecx.product.store.model.ProductItemSearchCriteria;
 
 @Mapper(uses = { OffsetDateTimeMapper.class })
 public interface HelpMapper {
@@ -25,11 +23,5 @@ public interface HelpMapper {
 
     @Mapping(target = "removeProductNamesItem", ignore = true)
     HelpProductNamesDTO mapHelpProductNames(HelpProductNames helpProductNames);
-
-    @Mapping(target = "productNames", ignore = true)
-    ProductItemSearchCriteria map(ProductsSearchCriteriaDTO productsSearchCriteriaDTO);
-
-    @Mapping(target = "removeStreamItem", ignore = true)
-    ProductsPageResultDTO map(ProductItemPageResult productItemPageResult);
 
 }

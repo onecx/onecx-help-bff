@@ -25,9 +25,6 @@ import gen.org.tkit.onecx.help.bff.rs.internal.model.*;
 import gen.org.tkit.onecx.help.client.model.*;
 import gen.org.tkit.onecx.help.exim.client.model.EximHelp;
 import gen.org.tkit.onecx.help.exim.client.model.HelpSnapshot;
-import gen.org.tkit.onecx.product.store.model.ProductItem;
-import gen.org.tkit.onecx.product.store.model.ProductItemPageResult;
-import gen.org.tkit.onecx.product.store.model.ProductItemSearchCriteria;
 import io.quarkiverse.mockserver.test.InjectMockServerClient;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -168,8 +165,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .queryParam("id", id)
-                .delete()
+                .delete(id)
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
@@ -240,8 +236,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .queryParam("id", id)
-                .get()
+                .get(id)
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(HelpDTO.class);
@@ -268,8 +263,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
-                .queryParam("id", id)
-                .get()
+                .get(id)
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode());
         Assertions.assertNotNull(response);
@@ -385,8 +379,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .queryParam("id", id)
-                .put()
+                .put(id)
                 .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
 
@@ -422,55 +415,12 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .queryParam("id", "82689h23-9624-2234-c50b-8749d073c287")
-                .put()
+                .put("/82689h23-9624-2234-c50b-8749d073c287")
                 .then()
                 .statusCode(Response.Status.NOT_FOUND.getStatusCode())
                 .contentType(APPLICATION_JSON)
                 .extract().as(ProblemDetailResponseDTO.class);
 
-    }
-
-    @Test
-    void getAllProductsTest() {
-
-        ProductItemSearchCriteria criteria = new ProductItemSearchCriteria();
-        criteria.pageNumber(0).pageSize(1);
-        ProductItemPageResult result = new ProductItemPageResult();
-        result.totalElements(2L).stream(List.of(new ProductItem().name("P1").displayName("Product1"),
-                new ProductItem().name("P2").displayName("Product2")));
-
-        mockServerClient
-                .when(request().withPath("/v1/products/search")
-                        .withMethod(HttpMethod.POST)
-                        .withBody(JsonBody.json(criteria)))
-                .withPriority(100)
-                .withId(MOCK_ID)
-                .respond(httpRequest -> response().withStatusCode(Response.Status.OK.getStatusCode())
-                        .withContentType(MediaType.APPLICATION_JSON)
-                        .withBody(JsonBody.json(result)));
-
-        ProductsSearchCriteriaDTO criteriaDTO = new ProductsSearchCriteriaDTO();
-        criteriaDTO.pageNumber(0).pageSize(1);
-        // bff call
-        var response = given()
-                .when()
-                .auth().oauth2(keycloakClient.getAccessToken(ADMIN))
-                .header(APM_HEADER_PARAM, ADMIN)
-                .contentType(APPLICATION_JSON)
-                .body(criteriaDTO)
-                .post("/products")
-                .then()
-                .statusCode(Response.Status.OK.getStatusCode())
-                .contentType(APPLICATION_JSON)
-                .extract().as(ProductsPageResultDTO.class);
-
-        Assertions.assertEquals(2, response.getStream().size());
-        Assertions.assertEquals("P1", response.getStream().get(0).getName());
-        Assertions.assertEquals("Product1", response.getStream().get(0).getDisplayName());
-        Assertions.assertEquals("P2", response.getStream().get(1).getName());
-        Assertions.assertEquals("Product2", response.getStream().get(1).getDisplayName());
-        mockServerClient.clear(MOCK_ID);
     }
 
     @Test
@@ -501,7 +451,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, ADMIN)
                 .contentType(APPLICATION_JSON)
                 .queryParam("helpItemId", "i1")
-                .get("/p1")
+                .get("/item/p1")
                 .then()
                 .statusCode(Response.Status.OK.getStatusCode())
                 .extract().as(HelpDTO.class);
@@ -538,8 +488,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .header(APM_HEADER_PARAM, USER)
                 .contentType(APPLICATION_JSON)
                 .body(updateHelpDTO)
-                .queryParam("id", id)
-                .put()
+                .put(id)
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
 
@@ -549,8 +498,7 @@ class HelpRestControllerTest extends AbstractTest {
                 .auth().oauth2(keycloakClient.getAccessToken(USER))
                 .header(APM_HEADER_PARAM, USER)
                 .contentType(APPLICATION_JSON)
-                .queryParam("id", id)
-                .delete()
+                .delete(id)
                 .then()
                 .statusCode(Response.Status.FORBIDDEN.getStatusCode());
     }
