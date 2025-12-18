@@ -18,7 +18,7 @@ onecx.permissions.application-id=${quarkus.application.name}
 org.eclipse.microprofile.rest.client.propagateHeaders=apm-principal-token
 %prod.quarkus.rest-client.onecx_help_svc.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
 %prod.quarkus.rest-client.onecx_product_store.providers=io.quarkus.oidc.client.reactive.filter.OidcClientRequestReactiveFilter
-%prod.quarkus.oidc-client.client-id=${ONECX_OIDC_CLIENT_CLIENT_ID:${quarkus.application.name}}
+%prod.quarkus.oidc-client.client-id=${quarkus.application.name}
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.config-key=onecx_help_svc
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.base-package=gen.org.tkit.onecx.help.client
 quarkus.openapi-generator.codegen.spec.onecx_help_svc_yaml.return-response=true
@@ -62,8 +62,6 @@ Default values
 ----
 app:
   name: bff
-  template:
-    oidc_client_id: "ONECX_OIDC_CLIENT_CLIENT_ID"
   image:
     repository: "onecx/onecx-help-bff"
   operator:
@@ -86,6 +84,11 @@ app:
             defaultClientScopes: [ ocx-hp:all, ocx-ps:read, ocx-pm:read ]
     microservice:
       spec:
+        description: OneCX Help Backend For Frontend
+        name: OneCX Help BFF
+----
+
+pec:
         description: OneCX Help Backend For Frontend
         name: OneCX Help BFF
 ----
