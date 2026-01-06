@@ -88,8 +88,3 @@ app:
         name: OneCX Help BFF
 ----
 
-pec:
-        description: OneCX Help Backend For Frontend
-        name: OneCX Help BFF
-----
-
