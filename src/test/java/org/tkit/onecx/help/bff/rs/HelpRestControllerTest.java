@@ -44,7 +44,7 @@ class HelpRestControllerTest extends AbstractTest {
     void resetMockserver() {
         try {
             mockServerClient.clear(MOCK_ID);
-        } catch (Exception ex) {
+        } catch (Exception _) {
             // mockId not existing
         }
     }
